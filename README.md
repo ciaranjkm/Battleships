@@ -11,7 +11,7 @@ Action Shipname StartPosition Direction
 
   - `Actions` can be defined as `place` or `move`.
 
-  - `Shipnname` is the name of the ship you want to place or move, entered as the full name `carrief` or starting letter `c`.
+  - `Shipnname` is the name of the ship you want to place or move, entered as the full name `carrier` or starting letter `c`.
   
   - `StartPosition` is the the position of the first cell of your ship in a letter number format, for example `f10`.
 
