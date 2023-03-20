@@ -12,16 +12,9 @@ class Program
     // drawship called -> calls to get coords to draw -> draws one coords moves to the next.
 
     static void Main(string[] args)
-    {
+    {//TODO convert text file use to gameassets class
         while (true)
         {
-            GameAssets g = new GameAssets();
-            foreach(string i in g.Titles[1])
-            {
-                Console.Write(i);
-            }
-            Console.ReadKey();
-
             Console.Clear();
             //Calls menu routine as soon as the program opens, will exit while () when
             //valid choiceMade is true.
@@ -352,56 +345,14 @@ class Program
         }
     }
 
-    static string[][] titles = new string[3][];
     static void displayTitle(int titleToDisplay)
     {
-        string[] temporary = File.ReadAllLines("title.txt");
-        int multiplier = 1;
+        GameAssets g = new GameAssets();
+        string[] title = g.Titles[titleToDisplay];
 
-        string[] titleP1 = new string[5];
-        for (int i = 0; i < 5; i++)
+        foreach(string t in title)
         {
-            titleP1[i] = temporary[i];
-        }
-
-        string[] titleP2 = new string[5];
-        for (int i = 5; i < 10; i++)
-        {
-            titleP2[i - 5] = temporary[i];
-        }
-
-        string[] title = new string[5];
-        for (int i = 10; i < 15; i++)
-        {
-            title[i - 10] = temporary[i];
-        }
-
-        titles[0] = (title);
-        titles[1] = (titleP1);
-        titles[2] = (titleP2);
-
-        if (titleToDisplay == 0)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine(titles[0][i]);
-            }
-        }
-        if (titleToDisplay == 1)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                Console.WriteLine(titles[1][i]);
-            }
-        }
-        if (titleToDisplay == 2)
-        {
-            foreach (string i in titles[2])
-                Console.WriteLine(i);
-        }
-        if (titleToDisplay < 0 || titleToDisplay > 2)
-        {
-            error("could not get titles ensure file is intact.");
+            Console.Write(t);
         }
     }
 
@@ -676,10 +627,8 @@ class Program
 
     static string[] createGrid()
     {
-        string[] lines = File.ReadAllLines("grid.txt");
-        string[] grid = new string[24];
-        for (int i = 0; i < 24; i++)
-            grid[i] = lines[i];
+        GameAssets g = new GameAssets();
+        string[] grid = g.Grid;
 
         return grid;
     }
