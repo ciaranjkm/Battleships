@@ -1,5 +1,5 @@
 # Battleships 
-### A console application game built in C# .NET 7 *seperate paragraph*.
+### A console application game built in C# .NET 7.
 
 ## Commands for the setup stage.
 
