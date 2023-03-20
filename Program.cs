@@ -678,10 +678,8 @@ class Program
 
     static string[] createGrid()
     {
-        string[] lines = File.ReadAllLines("grid.txt");
-        string[] grid = new string[24];
-        for (int i = 0; i < 24; i++)
-            grid[i] = lines[i];
+        GameAssets g = new GameAssets();
+        string[] grid = g.Grid;
 
         return grid;
     }
