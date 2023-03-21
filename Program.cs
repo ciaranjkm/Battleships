@@ -8,7 +8,6 @@ using System.Xml.Linq;
 using System.Numerics;
 
 // This is a new version
-//TODO tidyup and finish vs cpu.
 
 class Program
 {
