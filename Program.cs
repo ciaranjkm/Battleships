@@ -7,7 +7,11 @@ using System.Diagnostics.Metrics;
 using System.Xml.Linq;
 using System.Numerics;
 
+<<<<<<< HEAD
 // This is a new version
+=======
+//This is a new version
+>>>>>>> ba8b67907cbd652561dc5f16292535fe386770aa
 
 class Program
 {
