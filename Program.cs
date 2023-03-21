@@ -7,6 +7,9 @@ using System.Diagnostics.Metrics;
 using System.Xml.Linq;
 using System.Numerics;
 
+// This is a new version
+//TODO tidyup and finish vs cpu.
+
 class Program
 {
     // drawship called -> calls to get coords to draw -> draws one coords moves to the next.
@@ -239,7 +242,7 @@ class Program
                     }
             }
             Console.Clear();
-            Console.Write("Player {0} is the winner.", playerWon.ToString());
+            Console.Write("Player {0} is the winner. ", playerWon.ToString());
             Console.Write("Press any key to return to the main menu.");
             Console.ReadKey();
             continue;
@@ -533,6 +536,7 @@ class Program
         return coords;
     }
 
+
     static void drawToBoardSetCoord(string[] grid, string c, string r, char toDraw, bool targetBoard)
     {
         // if board one target is false.
@@ -686,7 +690,7 @@ class Program
             string commandTemp = string.Empty;
 
             Console.WriteLine("[Place/Move] [Shipname] [Start Position] [Directon]");
-            commandTemp = Console.ReadLine();
+            commandTemp = Console.ReadLine().ToLower();
             command = checkCommand_placemove(commandTemp, shipNames);
 
             int err = Convert.ToInt32(command[0]);
@@ -700,15 +704,24 @@ class Program
 
             string action = command[1].ToLower();
             string shipTarget = command[2].ToLower();
-            string[] startPosition = command[3].Split(',');
+            string startPosition = command[3].ToLower();
             string direction = command[4].ToLower();
 
             int shipArrPostition = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (playerShips[i].getName().ToLower() == shipTarget)
+                string nameToCheck = playerShips[i].getName().ToLower();
+                char firstCharOfNameToCheck = nameToCheck.ToCharArray()[0];
+
+                if (nameToCheck == shipTarget)
                 {
                     shipArrPostition = i;
+                    break;
+                }
+                if(firstCharOfNameToCheck.ToString() == shipTarget)
+                {
+                    shipArrPostition = i;
+                    break;
                 }
             }
 
@@ -721,9 +734,17 @@ class Program
                     continue;
                 }
 
+                char[] coordsTemp = startPosition.ToCharArray();
+                string startColumn = coordsTemp[0].ToString();
+                string startRow = "";
+                for(int i = 1; i < coordsTemp.Length; i++)
+                {
+                    startRow = startRow + coordsTemp[i];
+                }
+
                 playerShips[shipArrPostition].setDirection(direction);
-                playerShips[shipArrPostition].setStartColumn(startPosition[0]);
-                playerShips[shipArrPostition].setStartRow(startPosition[1]);
+                playerShips[shipArrPostition].setStartColumn(startColumn);
+                playerShips[shipArrPostition].setStartRow(startRow);
 
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
@@ -755,7 +776,9 @@ class Program
                 drawShipToBoard(grid, playerShips[shipArrPostition]);
                 shipsPlaced++;
 
-                Console.WriteLine("Command successful. Press any key to continue..");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\nCommand Successful.. Any key to continue..");
+                Console.ResetColor();
                 Console.ReadKey();
                 Thread.Sleep(500);
                 continue;
@@ -773,9 +796,17 @@ class Program
                 Ship shipToRemove = new Ship(0, "");
                 shipToRemove.setPositions(playerShips[shipArrPostition].getPositions());
 
+                char[] coordsTemp = startPosition.ToCharArray();
+                string startColumn = coordsTemp[0].ToString();
+                string startRow = "";
+                for (int i = 1; i < coordsTemp.Length; i++)
+                {
+                    startRow = startRow + coordsTemp[i];
+                }
+
                 playerShips[shipArrPostition].setDirection(direction);
-                playerShips[shipArrPostition].setStartColumn(startPosition[0]);
-                playerShips[shipArrPostition].setStartRow(startPosition[1]);
+                playerShips[shipArrPostition].setStartColumn(startColumn);
+                playerShips[shipArrPostition].setStartRow(startRow); ;
 
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
@@ -818,7 +849,9 @@ class Program
                 removeShipFromBoard(grid, shipToRemove, false);
                 drawShipToBoard(grid, playerShips[shipArrPostition]);
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\nCommand Successful.. Any key to continue..");
+                Console.ResetColor();
                 Console.ReadKey();
                 Thread.Sleep(500);
 
@@ -884,9 +917,14 @@ class Program
 
             }
 
-            string[] coordsTemp = coordinates.Split(',');
-            string columnCoordinate = coordsTemp[0];
-            string rowCoordinate = coordsTemp[1];
+            char[] coordsTemp = coordinates.ToCharArray();
+
+            string columnCoordinate = coordsTemp[0].ToString();
+            string rowCoordinate = "";
+            for(int i = 1; i < coordsTemp.Length; i++)
+            {
+                rowCoordinate = rowCoordinate + coordsTemp[i];
+            }
 
             switch (columnCoordinate.ToLower())
             {
@@ -1006,7 +1044,7 @@ class Program
             updateShipStatus(currentPGrid, currentPShips);
             displayGame(currentPGrid, turn);
 
-            string g = string.Join(',', playerGuesses);
+            string g = string.Join(' ', playerGuesses);
             Console.WriteLine("My Guesses: " + g);
 
             string mh = "";
@@ -1016,8 +1054,9 @@ class Program
                 mh = mh + string.Join(',', htemp);
             }
 
-            Console.WriteLine("My Hits: " + mh);
 
+            Console.WriteLine("My Hits: " + mh);
+1
             string h = "";
             foreach (Ship i in currentPShips)
             {
@@ -1027,7 +1066,7 @@ class Program
 
             Console.WriteLine("\nOpponent Hits: " + h);
 
-            Console.WriteLine("\n[Column] [Row]");
+            Console.WriteLine("\n[Column][Row]");
 
             string cmd = Console.ReadLine();
             cmd = cmd.Trim();
@@ -1090,7 +1129,15 @@ class Program
 
         while (true)
         {
-            string[] commandTerms = command.Split(' ');
+            string[] commandTerms = new string[2];
+            char[] temp = command.ToCharArray();
+            commandTerms[0] = temp[0].ToString();
+            commandTerms[1] = "";
+            for(int i = 1; i < temp.Length; i++)
+            {
+                commandTerms[1] = commandTerms[1] + temp[i];
+            }
+
             if (commandTerms.Length != 2)
             {
                 break;
