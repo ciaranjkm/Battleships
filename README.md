@@ -1,4 +1,5 @@
-# Battleships 
+# Battleships
+## Two Player is the only option working right now this is a WIP.
 ### A console application game built in C# .NET 7.
 
 ## Commands for the setup stage.
