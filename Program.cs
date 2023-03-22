@@ -11,10 +11,8 @@ using System.Numerics;
 
 class Program
 {
-    // drawship called -> calls to get coords to draw -> draws one coords moves to the next.
-
     static void Main(string[] args)
-    {//TODO convert text file use to gameassets class
+    {
         while (true)
         {
             Console.Clear();
@@ -60,12 +58,10 @@ class Program
 
             //START GAME ------------------------------------------
 
-            ////Create a grid for each player.
-            var playerOneGrid = createGrid();
+            var playerOneGrid = createGrid(); //create a grid for each player
             var playerTwoGrid = createGrid();
 
-            ////Create an array of ships for each player and place them onto the grid.
-            Ship[] playerOneShips = createPlayerShips();
+            Ship[] playerOneShips = createPlayerShips(); //create ships for each player
             Ship[] playerTwoShips = createPlayerShips();
 
             //Create list of guesses each player has made.
@@ -79,16 +75,12 @@ class Program
             bool turn = false;
             switch (choice)
             {
-                //1 for pass and play
-                //2 for vs cpu
-                //0 for cpu vs cpu testing.
                 case 1:
                     {
-                        //Place ships onto the board.
-                        ships(playerOneGrid, playerOneShips, 1);
+                        ships(playerOneGrid, playerOneShips, 1); //get each player to place ship onto the board
                         ships(playerTwoGrid, playerTwoShips, 2);
 
-                        while (true)
+                        while (true) //break when game is won
                         {
                             if (turn == false)
                             {
@@ -102,7 +94,7 @@ class Program
                             int p1Hits = 0;
                             int p2Hits = 0;
 
-                            for (int i = 0; i < 5; i++)
+                            for (int i = 0; i < 5; i++) //if a player has 17 hits all their ships are gone
                             {
                                 var hits1 = playerOneShips[i].getHits().Count();
                                 var hits2 = playerTwoShips[i].getHits().Count();
@@ -121,20 +113,24 @@ class Program
                                 break;
                             }
 
-                            turn = !turn;
+                            turn = !turn; //not turn to switch to other player
                         }
                         break;
                     }
                 case 2:
                     {
                         //TODO: cpu vs player.
-                        cpuShips(playerTwoGrid, playerTwoShips);
-                        foreach (Ship i in playerTwoShips)
-                        {
-                            drawShipToBoard(playerTwoGrid, i);
-                        }
 
-                        displayGame(playerTwoGrid, 2);
+                        //create grid and ships for p2(CPU)
+                        //place ships PLAYER
+                        //get guess from PLAYER
+                        //hit miss update p1 board
+                        //get guess for p2(CPU)
+                        //hit miss update p1 board
+                        //repeat until won
+
+                        cpuShips(playerTwoGrid, playerTwoShips);
+                        
 
                         Console.ReadKey();
 
@@ -143,10 +139,10 @@ class Program
                     }
                 case 0:
                     {
-                        sampleGame(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips);
+                        sampleGame(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips); //makes two random grids with random ships
                         for (int i = 0; i < 5; i++)
                         {
-                            drawShipToBoard(playerOneGrid, playerOneShips[i]);
+                            drawShipToBoard(playerOneGrid, playerOneShips[i]); //draws each ship to board ;optional
                             drawShipToBoard(playerTwoGrid, playerTwoShips[i]);
                         }
 
@@ -162,17 +158,17 @@ class Program
                                 cpuGuesses1.Add(posToAdd);
                                 cpuGuesses2.Add(posToAdd);
                             }
-                        }
+                        } //creates a list of all possible positions
 
                         while (true)
                         {
                             int p1Hits = 0;
                             int p2Hits = 0;
 
-                            cpuGuessAndUpdate(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, cpuGuesses1);
+                            cpuGuessAndUpdate(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, cpuGuesses1); 
                             cpuGuessAndUpdate(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, cpuGuesses2);
 
-                            for (int i = 0; i < 5; i++)
+                            for (int i = 0; i < 5; i++) //check if a player has won
                             {
                                 var hits1 = playerOneShips[i].getHits().Count();
                                 var hits2 = playerTwoShips[i].getHits().Count();
@@ -189,10 +185,7 @@ class Program
                             {
                                 playerWon = 1;
                                 break;
-                            }
-
-                            Console.WriteLine(p1Hits.ToString());
-                            Console.WriteLine(p2Hits.ToString());
+                            } 
                         }
 
                         List<string> p1h = new List<string>();
@@ -209,7 +202,6 @@ class Program
                                 p2h.Add(p);
                             }
                         }
-
 
                         displayGame(playerOneGrid, 1);
                         Console.Write("\nGuesses {0}: ", playerOneGuesses.Count());
@@ -238,8 +230,9 @@ class Program
                         Console.ReadKey();
 
                         break;
-                    }
+                    } //sample game cpu vs cpu
             }
+
             Console.Clear();
             Console.Write("Player {0} is the winner. ", playerWon.ToString());
             Console.Write("Press any key to return to the main menu.");
@@ -281,7 +274,7 @@ class Program
         {
             return -1;
         }
-    }
+    } //display the menu and return the choice. will return -1 if error, or invalid choice.
 
     static void error(string messgage)
     {
@@ -289,7 +282,7 @@ class Program
         Console.Write("Press any key to try again...");
         Console.ReadKey();
         Console.Clear();
-    }
+    } //display an error message and then clear the console.
 
     static void displayGame(string[] grid, int titleToDisplay)
     {
@@ -298,7 +291,7 @@ class Program
         Console.WriteLine();
         displayBoard(grid);
         Console.WriteLine();
-    }
+    } //display title and board relevant to each player.
 
     static void displayBoard(string[] grid)
     {
@@ -345,7 +338,7 @@ class Program
             }
             Console.Write("\n");
         }
-    }
+    } //display the board.
 
     static void displayTitle(int titleToDisplay)
     {
@@ -356,7 +349,7 @@ class Program
         {
             Console.Write(t);
         }
-    }
+    } //display the tile.
 
     //DRAW -----------------------------------
 
@@ -525,7 +518,7 @@ class Program
 
         //returns [-1,-1] for error, returns coords to draw if valid.
         return coords;
-    }
+    } //get what char to change to draw to left board.
 
     static int[] getCoordsForBoardTwo(string c, string r)
     {
@@ -533,8 +526,7 @@ class Program
         coords[0] = coords[0] + 45; // offset x only y is the same.
 
         return coords;
-    }
-
+    } //get what char to change to draw to right board.
 
     static void drawToBoardSetCoord(string[] grid, string c, string r, char toDraw, bool targetBoard)
     {
@@ -572,7 +564,7 @@ class Program
 
             grid[row] = new string(chars);
         }
-    }
+    } //draw a set character to a supplied coordiante letter;number a1
 
     static void updateShipStatus(string[] grid, Ship[] ships)
     {
@@ -624,7 +616,7 @@ class Program
             }
             count++;
         }
-    }
+    } //change status of all ships
 
     //GAME -----------------------------------
 
@@ -634,7 +626,7 @@ class Program
         string[] grid = g.Grid;
 
         return grid;
-    }
+    } //creates a grid from GameAssets and returns it
 
     static Ship[] createPlayerShips()
     {
@@ -650,7 +642,148 @@ class Program
         }
 
         return playerShips;
-    }
+    } //creates the ships for each player and returns then as an array
+
+    static bool isShipAtPosition(string c, string r, Ship[] playerShips)
+    {
+        string targetCoord = string.Join(';', c, r);
+        foreach (Ship i in playerShips)
+        {
+            string[] pos = i.getPositions();
+            foreach (string j in pos)
+            {
+                if (j == targetCoord)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    } //is there a ship at a coordinate letter;number a1
+
+    //GAME : CPU
+
+    static void cpuShips(string[] grid, Ship[] ships)
+    {
+        //create random row ; will always be correct (between 1-10)
+        //create random col ; (between ASCII 97-106 a-j
+        //get next ships length
+        //get valid directions for next ship ; will it collide with edge or other ships.
+        //create ship with random valid direction.
+        //back to start until 5 ships placed.
+
+        string[] directions = new string[] { "up", "right", "down", "left" };
+        List<string> forbiddenCoordinates = new List<string>();
+
+        for (int i = 0; i < 5; i++)
+        {
+            while (true)
+            {
+                Random rnd = new Random();
+                char rndColumn = (char)rnd.Next(97, 107);
+                int rndRow = rnd.Next(1, 11);
+
+                string column = rndColumn.ToString();
+                string row = rndRow.ToString();
+
+                ships[i].setStartColumn(column);
+                ships[i].setStartRow(row);
+
+                bool validNonCollide = false;
+
+                for (int d = 0; d < 4; d++)
+                {
+                    string dir = directions[rnd.Next(0, 4)];
+                    ships[i].setDirection(dir);
+                    validNonCollide = ships[i].createAllShipPositions();
+                    if (validNonCollide == true)
+                    {
+                        break;
+                    }
+                }
+                if (validNonCollide == false)
+                {
+                    continue;
+                }
+
+                bool validShipCollide = true;
+                foreach (string p in forbiddenCoordinates)
+                {
+                    string[] posToCheck = ships[i].getPositions();
+                    if (posToCheck.Contains(p) == true)
+                    {
+                        validShipCollide = false;
+                        break;
+                    }
+                }
+                if (validShipCollide == false)
+                {
+                    continue;
+                }
+                string[] posToAdd = ships[i].getPositions();
+                foreach (string p in posToAdd)
+                {
+                    forbiddenCoordinates.Add(p);
+                }
+
+                ships[i].setPlaced(true);
+                break;
+            }
+        }
+    } //will place ships randomly onto board CPU
+
+    static void cpuGuessAndUpdate(string[] currentPGrid, string[] oppGrid,
+    Ship[] currentPShips, Ship[] oppShips, List<string> previousGuesses, List<string> allPositions)
+    {
+        //cpu ships are p1s, player is p2s.
+
+        //generate list of all positions.
+        //get random guess.
+        //check position
+        //remove from list
+        while (true)
+        {
+            if (allPositions.Count() < 1)
+            {
+                break;
+            }
+            Random rnd = new Random();
+            int guessPositionInList = rnd.Next(0, allPositions.Count());
+            string[] guess = allPositions[guessPositionInList].Split(';');
+
+
+            bool isHitOrMiss = isShipAtPosition(guess[0], guess[1], oppShips);
+            if (isHitOrMiss == true)
+            {
+                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], ')', true);
+                drawToBoardSetCoord(oppGrid, guess[0], guess[1], ')', false);
+
+                foreach (Ship i in oppShips)
+                {
+                    string[] pos = i.getPositions();
+                    string targetCoords = string.Join(';', guess[0], guess[1]);
+                    if (pos.Contains(targetCoords) == true)
+                    {
+                        i.addHit(targetCoords);
+                    }
+                }
+            }
+            if (isHitOrMiss == false)
+            {
+                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], '=', true);
+                drawToBoardSetCoord(oppGrid, guess[0], guess[1], '=', false);
+
+                updateShipStatus(currentPGrid, currentPShips);
+            }
+            allPositions.RemoveAt(guessPositionInList);
+            previousGuesses.Add(string.Join(';', guess[0], guess[1]));
+
+            break;
+        }
+    } //get a guess from the CPU, check hit or miss and update boards accordinly
+
+    //GAME : PLAYER
 
     static void ships(string[] grid, Ship[] playerShips, int player)
     {
@@ -779,7 +912,8 @@ class Program
                 Console.WriteLine("\nCommand Successful.. Any key to continue..");
                 Console.ResetColor();
                 Console.ReadKey();
-                Thread.Sleep(500);
+                Thread.Sleep(200);
+
                 continue;
             }
             if (action.ToLower() == "move")
@@ -852,14 +986,14 @@ class Program
                 Console.WriteLine("\nCommand Successful.. Any key to continue..");
                 Console.ResetColor();
                 Console.ReadKey();
-                Thread.Sleep(500);
+                Thread.Sleep(200);
 
                 continue;
             }
         }
         updateShipStatus(grid, playerShips);
         displayGame(grid, player);
-    }
+    } //place the players ships onto the board
 
     static string[] checkCommand_placemove(string command, string[] shipNames)
     {
@@ -1027,7 +1161,7 @@ class Program
         }
 
         return cmd;
-    }
+    } //check command for placing player ships is correct, returns string[] of command terms
 
     static void gameTurn(string[] currentPGrid, string[] oppGrid, Ship[] currentPShips, Ship[] oppShips, List<string> playerGuesses, int turn)
     {
@@ -1120,7 +1254,7 @@ class Program
 
             break;
         }
-    }
+    } //one turn PLAYER
 
     static string[] checkCommand_guess(string command, List<string> guesses)
     {
@@ -1256,144 +1390,8 @@ class Program
         }
 
         return cmd;
-    }
+    } //checks command for guessing is correct
 
-    static bool isShipAtPosition(string c, string r, Ship[] playerShips)
-    {
-        string targetCoord = string.Join(';', c, r);
-        foreach (Ship i in playerShips)
-        {
-            string[] pos = i.getPositions();
-            foreach (string j in pos)
-            {
-                if (j == targetCoord)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    static void cpuShips(string[] grid, Ship[] ships)
-    {
-        //create random row ; will always be correct (between 1-10)
-        //create random col ; (between ASCII 97-106 a-j
-        //get next ships length
-        //get valid directions for next ship ; will it collide with edge or other ships.
-        //create ship with random valid direction.
-        //back to start until 5 ships placed.
-
-        string[] directions = new string[] { "up", "right", "down", "left" };
-        List<string> forbiddenCoordinates = new List<string>();
-
-        for (int i = 0; i < 5; i++)
-        {
-            while (true)
-            {
-                Random rnd = new Random();
-                char rndColumn = (char)rnd.Next(97, 107);
-                int rndRow = rnd.Next(1, 11);
-
-                string column = rndColumn.ToString();
-                string row = rndRow.ToString();
-
-                ships[i].setStartColumn(column);
-                ships[i].setStartRow(row);
-
-                bool validNonCollide = false;
-
-                for (int d = 0; d < 4; d++)
-                {
-                    string dir = directions[rnd.Next(0, 4)];
-                    ships[i].setDirection(dir);
-                    validNonCollide = ships[i].createAllShipPositions();
-                    if (validNonCollide == true)
-                    {
-                        break;
-                    }
-                }
-                if (validNonCollide == false)
-                {
-                    continue;
-                }
-
-                bool validShipCollide = true;
-                foreach (string p in forbiddenCoordinates)
-                {
-                    string[] posToCheck = ships[i].getPositions();
-                    if (posToCheck.Contains(p) == true)
-                    {
-                        validShipCollide = false;
-                        break;
-                    }
-                }
-                if (validShipCollide == false)
-                {
-                    continue;
-                }
-                string[] posToAdd = ships[i].getPositions();
-                foreach (string p in posToAdd)
-                {
-                    forbiddenCoordinates.Add(p);
-                }
-
-                ships[i].setPlaced(true);
-                break;
-            }
-        }
-    }
-
-    static void cpuGuessAndUpdate(string[] currentPGrid, string[] oppGrid,
-        Ship[] currentPShips, Ship[] oppShips, List<string> previousGuesses, List<string> allPositions)
-    {
-        //cpu ships are p1s, player is p2s.
-
-        //generate list of all positions.
-        //get random guess.
-        //check position
-        //remove from list
-        while (true)
-        {
-            if (allPositions.Count() < 1)
-            {
-                break;
-            }
-            Random rnd = new Random();
-            int guessPositionInList = rnd.Next(0, allPositions.Count());
-            string[] guess = allPositions[guessPositionInList].Split(';');
-
-
-            bool isHitOrMiss = isShipAtPosition(guess[0], guess[1], oppShips);
-            if (isHitOrMiss == true)
-            {
-                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], ')', true);
-                drawToBoardSetCoord(oppGrid, guess[0], guess[1], ')', false);
-
-                foreach (Ship i in oppShips)
-                {
-                    string[] pos = i.getPositions();
-                    string targetCoords = string.Join(';', guess[0], guess[1]);
-                    if (pos.Contains(targetCoords) == true)
-                    {
-                        i.addHit(targetCoords);
-                    }
-                }
-            }
-            if (isHitOrMiss == false)
-            {
-                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], '=', true);
-                drawToBoardSetCoord(oppGrid, guess[0], guess[1], '=', false);
-
-                updateShipStatus(currentPGrid, currentPShips);
-            }
-            allPositions.RemoveAt(guessPositionInList);
-            previousGuesses.Add(string.Join(';', guess[0], guess[1]));
-
-            break;
-        }
-    }
 
     //TEST -----------------------------------
 
@@ -1401,5 +1399,5 @@ class Program
     {
         cpuShips(p1g, p1s);
         cpuShips(p2g, p2s);
-    }
+    } //sets up a sample game option 0 in the menu.
 }
