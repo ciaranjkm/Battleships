@@ -19,7 +19,6 @@ class Program
             //Calls menu routine as soon as the program opens, will exit while () when
             //valid choiceMade is true.
 
-            bool vsCPU = false;
             int choice = 0;
             while (true)
             {
@@ -590,7 +589,7 @@ class Program
                 shipHits++;
             }
 
-            int totalPositionsOfShip = ships[count].getLength();
+            int totalPositionsOfShip = ships[count].Length;
 
             char[] rowToEdit = grid[i].ToCharArray();
             if (sts == true)
@@ -687,15 +686,15 @@ class Program
                 string column = rndColumn.ToString();
                 string row = rndRow.ToString();
 
-                ships[i].setStartColumn(column);
-                ships[i].setStartRow(row);
+                ships[i].StartColumn = column;
+                ships[i].StartRow = row;
 
                 bool validNonCollide = false;
 
                 for (int d = 0; d < 4; d++)
                 {
                     string dir = directions[rnd.Next(0, 4)];
-                    ships[i].setDirection(dir);
+                    ships[i].Direction = dir;
                     validNonCollide = ships[i].createAllShipPositions();
                     if (validNonCollide == true)
                     {
@@ -808,7 +807,7 @@ class Program
         string[] shipNames = new string[5];
         for (int i = 0; i < 5; i++)
         {
-            shipNames[i] = playerShips[i].getName();
+            shipNames[i] = playerShips[i].Name;
         }
 
         List<string[]> forbiddenCoordinates = new List<string[]>();
@@ -819,10 +818,9 @@ class Program
             updateShipStatus(grid, playerShips);
             displayGame(grid, player);
             string[] command = new string[5];
-            string commandTemp = string.Empty;
 
             Console.WriteLine("[Place/Move] [Shipname] [Start Position] [Directon]");
-            commandTemp = Console.ReadLine().ToLower();
+            string commandTemp = null;
             command = checkCommand_placemove(commandTemp, shipNames);
 
             int err = Convert.ToInt32(command[0]);
@@ -842,7 +840,7 @@ class Program
             int shipArrPostition = 0;
             for (int i = 0; i < 5; i++)
             {
-                string nameToCheck = playerShips[i].getName().ToLower();
+                string nameToCheck = playerShips[i].Name.ToLower();
                 char firstCharOfNameToCheck = nameToCheck.ToCharArray()[0];
 
                 if (nameToCheck == shipTarget)
@@ -874,9 +872,9 @@ class Program
                     startRow = startRow + coordsTemp[i];
                 }
 
-                playerShips[shipArrPostition].setDirection(direction);
-                playerShips[shipArrPostition].setStartColumn(startColumn);
-                playerShips[shipArrPostition].setStartRow(startRow);
+                playerShips[shipArrPostition].Direction = direction;
+                playerShips[shipArrPostition].StartColumn = startColumn;
+                playerShips[shipArrPostition].StartRow = startRow;
 
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
@@ -937,9 +935,9 @@ class Program
                     startRow = startRow + coordsTemp[i];
                 }
 
-                playerShips[shipArrPostition].setDirection(direction);
-                playerShips[shipArrPostition].setStartColumn(startColumn);
-                playerShips[shipArrPostition].setStartRow(startRow); ;
+                playerShips[shipArrPostition].Direction = direction;
+                playerShips[shipArrPostition].StartColumn = startColumn;
+                playerShips[shipArrPostition].StartRow = startRow;
 
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
