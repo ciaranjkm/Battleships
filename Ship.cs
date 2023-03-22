@@ -4,22 +4,31 @@ namespace Battleships
 {
     public class Ship
     {
-        private string startRow = string.Empty;
-        private string startColumn = string.Empty;
-        private string direction;
-        private int length;
-        private string name;
+        public string StartRow { get;  set; }
+        public string StartColumn { get; set; }
+
+        public string Direction { get; set; }
+        public int Length { get; }
+
+        public string Name { get; }
 
         private string[] positions;
         private List<string> hits;
 
-        bool placed;
+        public bool placed { get; set; } 
 
         //When creating a new ship it will set its key starting properties.
         public Ship(int l, string n)
         {
-            length = l;
-            name = n;
+            StartRow = "";
+            StartColumn = "";
+
+            Direction = "";
+            Length = l;
+
+            Name = n;
+
+            positions = new string[l];
             hits = new List<string>();
 
             placed = false;
@@ -34,24 +43,6 @@ namespace Battleships
             return hits;
         }
 
-        public void setStartRow(string r)
-        {
-            startRow = r;
-        }
-        public string getStartRow()
-        {
-            return startRow;
-        }
-
-        public void setStartColumn(string c)
-        {
-            startColumn = c;
-        }
-        public string getStartColumn()
-        {
-            return startColumn;
-        }
-
         public void setPositions(string[] p)
         {
             positions = p;
@@ -59,33 +50,6 @@ namespace Battleships
         public string[] getPositions()
         {
             return positions;
-        }
-
-        public void setLength(int l)
-        {
-            length = l;
-        }
-        public int getLength()
-        {
-            return length;
-        }
-
-        public void setName(string n)
-        {
-            name = n;
-        }
-        public string getName()
-        {
-            return name;
-        }
-
-        public void setDirection(string d)
-        {
-            direction = d;
-        }
-        public string getDirection()
-        {
-            return direction;
         }
 
         public void setPlaced(bool s)
@@ -103,13 +67,13 @@ namespace Battleships
         {
             bool valid = true;
 
-            positions = new string[length];
-            positions[0] = string.Join(';', startColumn, startRow);
+            positions = new string[Length];
+            positions[0] = string.Join(';', StartColumn, StartRow);
 
-            //If direction is 0(up)
-            if (direction == "up")
+            //If Direction is 0(up)
+            if (Direction == "up")
             {
-                int nextRow = Int32.Parse(startRow);
+                int nextRow = Int32.Parse(StartRow);
 
                 for (int i = 1; i < positions.Length; i++)
                 {
@@ -117,17 +81,17 @@ namespace Battleships
 
                     if (nextRow == 11)
                     {
-                        Console.WriteLine("Invalid direction.");
+                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
-                    positions[i] = string.Join(';', startColumn, nextRow.ToString());
+                    positions[i] = string.Join(';', StartColumn, nextRow.ToString());
                 }
             }
-            //If direction is 1(right)
-            if (direction == "right")
+            //If Direction is 1(right)
+            if (Direction == "right")
             {
-                char[] t = startColumn.ToCharArray();
+                char[] t = StartColumn.ToCharArray();
                 int nextColumn = (int)t[0];
 
                 for (int i = 1; i < positions.Length; i++)
@@ -136,17 +100,17 @@ namespace Battleships
 
                     if (nextColumn > 106)
                     {
-                        Console.WriteLine("Invalid direction.");
+                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
-                    positions[i] = string.Join(';', (char)nextColumn, startRow);
+                    positions[i] = string.Join(';', (char)nextColumn, StartRow);
                 }
             }
-            //If direction is 2(down)
-            if (direction == "down")
+            //If Direction is 2(down)
+            if (Direction == "down")
             {
-                int nextRow = Int32.Parse(startRow);
+                int nextRow = Int32.Parse(StartRow);
 
                 for (int i = 1; i < positions.Length; i++)
                 {
@@ -154,16 +118,16 @@ namespace Battleships
 
                     if (nextRow == 0)
                     {
-                        Console.WriteLine("Invalid direction.");
+                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
-                    positions[i] = string.Join(';', startColumn, nextRow.ToString());
+                    positions[i] = string.Join(';', StartColumn, nextRow.ToString());
                 }
             }
-            //If direction is 3(left)
-            if (direction == "left")
+            //If Direction is 3(left)
+            if (Direction == "left")
             {
-                char[] t = startColumn.ToCharArray();
+                char[] t = StartColumn.ToCharArray();
                 int nextColumn = (int)t[0];
 
                 for (int i = 1; i < positions.Length; i++)
@@ -172,11 +136,11 @@ namespace Battleships
 
                     if (nextColumn < 97)
                     {
-                        Console.WriteLine("Invalid direction.");
+                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
-                    positions[i] = string.Join(';', (char)nextColumn, startRow);
+                    positions[i] = string.Join(';', (char)nextColumn, StartRow);
                 }
             }
 
