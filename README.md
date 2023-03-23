@@ -28,3 +28,9 @@ Guess:
 ```
 
 Where the player will type their guess in a letter number format, for example `d6`.
+
+
+## Commands help.
+
+ - All command terms can be entered as the full string or first character. For example the command `place carrier a1 right`
+   can be entered as `p c a1 r`.
