@@ -81,7 +81,6 @@ namespace Battleships
 
                     if (nextRow == 11)
                     {
-                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
@@ -100,7 +99,6 @@ namespace Battleships
 
                     if (nextColumn > 106)
                     {
-                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
@@ -118,7 +116,6 @@ namespace Battleships
 
                     if (nextRow == 0)
                     {
-                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
                     positions[i] = string.Join(';', StartColumn, nextRow.ToString());
@@ -136,7 +133,6 @@ namespace Battleships
 
                     if (nextColumn < 97)
                     {
-                        Console.WriteLine("Invalid Direction.");
                         valid = false;
                     }
 
