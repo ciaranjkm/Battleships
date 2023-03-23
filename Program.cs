@@ -253,7 +253,12 @@ class Program
         int choice = 0;
         try
         {
-            choice = Int32.Parse(Console.ReadLine());
+            string temp = Console.ReadLine();
+            if (temp == null)
+            {
+                error("choice you have selected is null.");
+            }
+            choice = Int32.Parse(temp);
 
             switch (choice)
             {
@@ -277,8 +282,10 @@ class Program
 
     static void error(string messgage)
     {
-        Console.WriteLine("\nError: " + messgage);
-        Console.Write("Press any key to try again...");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write("\nError: " + messgage);
+        Console.Write(" Press any key to try again...");
+        Console.ResetColor();
         Console.ReadKey();
         Console.Clear();
     } //display an error message and then clear the console.
@@ -820,15 +827,40 @@ class Program
             string[] command = new string[5];
 
             Console.WriteLine("[Place/Move] [Shipname] [Start Position] [Directon]");
-            string commandTemp = null;
+            string commandTemp = Console.ReadLine().ToLower();
+            if(string.IsNullOrWhiteSpace(commandTemp) == true) //check for null
+            {
+                error("command supplied is null.");
+                continue;
+            }
             command = checkCommand_placemove(commandTemp, shipNames);
 
             int err = Convert.ToInt32(command[0]);
             if (err < 0)
             {
-                //TODO:create error system when entering commands
-                Console.WriteLine(err.ToString());
-                Console.ReadKey();
+                switch(err)
+                {
+                    case -1:
+                        {
+                            error("you have not entered a valid action.");
+                            break;
+                        }
+                    case -2:
+                        {
+                            error("ensure you enter all commands.");
+                            break;
+                        }
+                    case -3:
+                        {
+                            error("the ship you have entered is not valid.");
+                            break;
+                        }
+                    case -4:
+                        {
+                            error("the direction you have entered is not valid.");
+                            break;
+                        }
+                }
                 continue;
             }
 
@@ -860,17 +892,12 @@ class Program
                 bool shipAlreadyPlaced = playerShips[shipArrPostition].getPlaced();
                 if (shipAlreadyPlaced == true)
                 {
-                    error("You have already placed this ship, use the 'move' command. [-2]");
+                    error("You have already placed this ship, use the 'move' command.");
                     continue;
                 }
 
-                char[] coordsTemp = startPosition.ToCharArray();
-                string startColumn = coordsTemp[0].ToString();
-                string startRow = "";
-                for(int i = 1; i < coordsTemp.Length; i++)
-                {
-                    startRow = startRow + coordsTemp[i];
-                }
+                string startColumn = startPosition.Split(';')[0];
+                string startRow = startPosition.Split(';')[1];
 
                 playerShips[shipArrPostition].Direction = direction;
                 playerShips[shipArrPostition].StartColumn = startColumn;
@@ -879,7 +906,7 @@ class Program
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
                 {
-                    error("Error creating your ship. Your direction is invalid. [-1]");
+                    error("your ship will not fit there. Try placing somewhere else.");
                     continue;
                 }
 
@@ -896,7 +923,7 @@ class Program
                 }
                 if (collide == true)
                 {
-                    error("You already have a ship there. [-3]");
+                    error("you already have a ship there.");
                     continue;
                 }
 
@@ -919,21 +946,15 @@ class Program
                 bool shipAlreadyPlaced = playerShips[shipArrPostition].getPlaced();
                 if (shipAlreadyPlaced == false)
                 {
-                    Console.WriteLine("You have not placed this ship, use the 'place' command. [-4]");
-                    Console.ReadKey();
+                    error("You have not placed this ship yet, use the 'place' command.");
                     continue;
                 }
 
                 Ship shipToRemove = new Ship(0, "");
                 shipToRemove.setPositions(playerShips[shipArrPostition].getPositions());
 
-                char[] coordsTemp = startPosition.ToCharArray();
-                string startColumn = coordsTemp[0].ToString();
-                string startRow = "";
-                for (int i = 1; i < coordsTemp.Length; i++)
-                {
-                    startRow = startRow + coordsTemp[i];
-                }
+                string startColumn = startPosition.Split(';')[0];
+                string startRow = startPosition.Split(';')[1];
 
                 playerShips[shipArrPostition].Direction = direction;
                 playerShips[shipArrPostition].StartColumn = startColumn;
@@ -942,7 +963,7 @@ class Program
                 bool validPositions = playerShips[shipArrPostition].createAllShipPositions();
                 if (validPositions == false)
                 {
-                    error("Error creating your ship. Your direction is invalid. [-1");
+                    error("your ship wont fit there. Try placing somewhere else.");
                     continue;
                 }
 
@@ -971,7 +992,7 @@ class Program
                 }
                 if (collide == true)
                 {
-                    error("You already have a ship there. [-3]");
+                    error("you already have a ship there.");
                     continue;
                 }
 
@@ -996,12 +1017,16 @@ class Program
     static string[] checkCommand_placemove(string command, string[] shipNames)
     {
         string[] cmd = new string[5] { "-1", "-1", "-1", "-1", "-1" };
+        foreach(string s in shipNames)
+        {
+            s.ToLower();
+        }
         while (true)
         {
-            //returns -1 at index 0 for error. change 1-4 for each command term.
+            //returns - at index 0 for error. change 1-4 for each command term.
             command = command.Trim();
             string[] commandTerms = command.Split();
-            if (!(commandTerms.Length == 4))
+            if (commandTerms.Length != 4) //length of command is 4
             {
                 cmd[0] = "-2";
                 return cmd;
@@ -1012,11 +1037,62 @@ class Program
                 cmd[i] = commandTerms[i - 1];
             }
 
+            string action = cmd[1];
             string shipTarget = cmd[2];
             string coordinates = cmd[3];
             string direction = cmd[4];
 
-            if ((shipNames.Contains(shipTarget)))
+            switch(action)
+            {
+                case "place":
+                    {
+                        break;
+                    }
+                case "p":
+                    {
+                        action = "place";
+                        break;
+                    }
+                case "move":
+                    {
+                        break;
+                    }
+                case "m":
+                    {
+                        action = "move";
+                        break;
+                    }
+                default:
+                    {
+                        cmd[0] = "-1";
+                        return cmd;
+                    }
+
+            }
+
+            bool foundShipName = false;
+            while (true) //is shipTarget valid.
+            {
+                foreach(string i in shipNames)
+                {
+                    string t = i.ToLower();
+                    char firstChar = t[0];
+                    char shipTargetFirstChar = shipTarget[0];
+                    if(i.ToLower() == shipTarget)
+                    {
+                        foundShipName = true;
+                        break;
+                    }
+                    if(firstChar == shipTargetFirstChar)
+                    {
+                        foundShipName = true;
+                        break;
+                    }
+                }
+
+                break;
+            }
+            if(foundShipName == false)
             {
                 cmd[0] = "-3";
                 return cmd;
@@ -1028,16 +1104,36 @@ class Program
                     {
                         break;
                     }
+                case "u":
+                    {
+                        direction = "up";
+                        break;
+                    }
                 case "right":
                     {
+                        break;
+                    }
+                case "r":
+                    {
+                        direction = "right";
                         break;
                     }
                 case "down":
                     {
                         break;
                     }
+                case "d":
+                    {
+                        direction = "down";
+                        break;
+                    }
                 case "left":
                     {
+                        break;
+                    }
+                case "l":
+                    {
+                        direction = "left";
                         break;
                     }
                 default:
@@ -1149,12 +1245,16 @@ class Program
                     }
                 default:
                     {
-                        cmd[0] = "-6";
+                        cmd[0] = "-5";
                         return cmd;
                     }
             }
 
             cmd[0] = "0";
+            cmd[1] = action;
+            cmd[2] = shipTarget;
+            cmd[3] = string.Join(';', columnCoordinate, rowCoordinate);
+            cmd[4] = direction;
             break;
         }
 
@@ -1200,14 +1300,19 @@ class Program
             Console.WriteLine("\n[Column][Row]");
 
             string cmd = Console.ReadLine();
+            if(cmd == null)
+            {
+                error("command you have entered is null.");
+                continue;
+            }
             cmd = cmd.Trim();
             string[] command = checkCommand_guess(cmd, playerGuesses);
 
-            int error = Convert.ToInt32(command[0]);
-            if (error < 0)
+            int err = Convert.ToInt32(command[0]);
+            if (err < 0)
             {
                 //TODO errors for checking guesses.
-                Console.WriteLine(error.ToString());
+                Console.WriteLine(err.ToString());
                 Console.ReadKey();
                 continue;
             }
