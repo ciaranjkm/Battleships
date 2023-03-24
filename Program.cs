@@ -142,19 +142,19 @@ class Program
 
                         cpuShips(playerTwoGrid, playerTwoShips);
                         cpuShips(playerOneGrid, playerOneShips);
-                        foreach(Ship s in playerOneShips)
+                        foreach (Ship s in playerOneShips)
                         {
                             drawShipToBoard(playerOneGrid, s);
                         }
 
 
-                        while(true)
+                        while (true)
                         {
-                            if(turn == false)
+                            if (turn == false)
                             {
                                 gameTurn(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, playerTwoGuesses, turn);
                             }
-                            if(turn == true)
+                            if (turn == true)
                             {
                                 cpuGuessAndUpdate(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, allPositions);
                             }
@@ -191,7 +191,7 @@ class Program
                         List<string> cpuGuesses1 = new List<string>();
                         List<string> cpuGuesses2 = new List<string>();
 
-                        foreach(string i in allPositions)
+                        foreach (string i in allPositions)
                         {
                             cpuGuesses1.Add(i);
                             cpuGuesses2.Add(i);
@@ -209,7 +209,7 @@ class Program
                             int p1Hits = 0;
                             int p2Hits = 0;
 
-                            cpuGuessAndUpdate(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, cpuGuesses1); 
+                            cpuGuessAndUpdate(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, cpuGuesses1);
                             cpuGuessAndUpdate(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, cpuGuesses2);
 
                             for (int i = 0; i < 5; i++) //check if a player has won
@@ -229,7 +229,7 @@ class Program
                             {
                                 playerWon = 1;
                                 break;
-                            } 
+                            }
                         }
 
                         List<string> p1h = new List<string>();
@@ -338,11 +338,11 @@ class Program
     static void displayGame(string[] grid, bool titleToDisplay)
     {
         int t = 0;
-        if(titleToDisplay == false)
+        if (titleToDisplay == false)
         {
             t = 1;
         }
-        if(titleToDisplay == true)
+        if (titleToDisplay == true)
         {
             t = 2;
         }
@@ -406,7 +406,7 @@ class Program
         GameAssets g = new GameAssets();
         string[] title = g.Titles[titleToDisplay];
 
-        foreach(string t in title)
+        foreach (string t in title)
         {
             Console.Write(t);
         }
@@ -897,7 +897,7 @@ class Program
 
             Console.WriteLine("[Place/Move] [Shipname] [Start Position] [Directon]");
             string commandTemp = Console.ReadLine().ToLower();
-            if(string.IsNullOrWhiteSpace(commandTemp) == true) //check for null
+            if (string.IsNullOrWhiteSpace(commandTemp) == true) //check for null
             {
                 error("command supplied is null.");
                 continue;
@@ -907,7 +907,7 @@ class Program
             int err = Convert.ToInt32(command[0]);
             if (err < 0)
             {
-                switch(err)
+                switch (err)
                 {
                     case -1:
                         {
@@ -949,7 +949,7 @@ class Program
                     shipArrPostition = i;
                     break;
                 }
-                if(firstCharOfNameToCheck.ToString() == shipTarget)
+                if (firstCharOfNameToCheck.ToString() == shipTarget)
                 {
                     shipArrPostition = i;
                     break;
@@ -1086,7 +1086,7 @@ class Program
     static string[] checkCommand_placemove(string command, string[] shipNames)
     {
         string[] cmd = new string[5] { "-1", "-1", "-1", "-1", "-1" };
-        foreach(string s in shipNames)
+        foreach (string s in shipNames)
         {
             s.ToLower();
         }
@@ -1111,7 +1111,7 @@ class Program
             string coordinates = cmd[3];
             string direction = cmd[4];
 
-            switch(action)
+            switch (action)
             {
                 case "place":
                     {
@@ -1142,17 +1142,17 @@ class Program
             bool foundShipName = false;
             while (true) //is shipTarget valid.
             {
-                foreach(string i in shipNames)
+                foreach (string i in shipNames)
                 {
                     string t = i.ToLower();
                     char firstChar = t[0];
                     char shipTargetFirstChar = shipTarget[0];
-                    if(i.ToLower() == shipTarget)
+                    if (i.ToLower() == shipTarget)
                     {
                         foundShipName = true;
                         break;
                     }
-                    if(firstChar == shipTargetFirstChar)
+                    if (firstChar == shipTargetFirstChar)
                     {
                         foundShipName = true;
                         break;
@@ -1161,7 +1161,7 @@ class Program
 
                 break;
             }
-            if(foundShipName == false)
+            if (foundShipName == false)
             {
                 cmd[0] = "-3";
                 return cmd;
@@ -1217,7 +1217,7 @@ class Program
 
             string columnCoordinate = coordsTemp[0].ToString();
             string rowCoordinate = "";
-            for(int i = 1; i < coordsTemp.Length; i++)
+            for (int i = 1; i < coordsTemp.Length; i++)
             {
                 rowCoordinate = rowCoordinate + coordsTemp[i];
             }
@@ -1369,7 +1369,7 @@ class Program
             Console.WriteLine("\n[Column][Row]");
 
             string cmd = Console.ReadLine();
-            if(cmd == null)
+            if (cmd == null)
             {
                 error("command you have entered is null.");
                 continue;
@@ -1431,6 +1431,10 @@ class Program
     static string[] checkCommand_guess(string command, List<string> guesses)
     {
         string[] cmd = new string[3] { "-1", "-1", "-1" };
+        if(string.IsNullOrWhiteSpace(command) == true)
+        {
+            return cmd;
+        }
 
         while (true)
         {
@@ -1438,7 +1442,7 @@ class Program
             char[] temp = command.ToCharArray();
             commandTerms[0] = temp[0].ToString();
             commandTerms[1] = "";
-            for(int i = 1; i < temp.Length; i++)
+            for (int i = 1; i < temp.Length; i++)
             {
                 commandTerms[1] = commandTerms[1] + temp[i];
             }
