@@ -6,6 +6,7 @@ using System.Linq;
 using System.Diagnostics.Metrics;
 using System.Xml.Linq;
 using System.Numerics;
+using System.Data.Common;
 
 // This is a new version
 
@@ -66,28 +67,39 @@ class Program
             //Create list of guesses each player has made.
             List<string> playerOneGuesses = new List<string>();
             List<string> playerTwoGuesses = new List<string>();
-            List<string> cpuGuesses1 = new List<string>();
-            List<string> cpuGuesses2 = new List<string>();
 
             int playerWon = 0;
-
             bool turn = false;
+
+            string[] columns = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+            string[] rows = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+
+            List<string> allPositions = new List<string>();
+            for (int c = 0; c < 10; c++)
+            {
+                for (int r = 0; r < 10; r++)
+                {
+                    string posToAdd = string.Join(';', columns[c], rows[r]);
+                    allPositions.Add(posToAdd);
+                }
+            } //creates a list of all possible positions
+
             switch (choice)
             {
                 case 1:
                     {
-                        ships(playerOneGrid, playerOneShips, 1); //get each player to place ship onto the board
-                        ships(playerTwoGrid, playerTwoShips, 2);
+                        ships(playerOneGrid, playerOneShips, false); //get each player to place ship onto the board
+                        ships(playerTwoGrid, playerTwoShips, true);
 
                         while (true) //break when game is won
                         {
                             if (turn == false)
                             {
-                                gameTurn(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, 1);
+                                gameTurn(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, playerTwoGuesses, turn);
                             }
                             if (turn == true)
                             {
-                                gameTurn(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, 2);
+                                gameTurn(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, playerOneGuesses, turn);
                             }
 
                             int p1Hits = 0;
@@ -115,7 +127,7 @@ class Program
                             turn = !turn; //not turn to switch to other player
                         }
                         break;
-                    }
+                    } //pass and plau
                 case 2:
                     {
                         //TODO: cpu vs player.
@@ -129,35 +141,68 @@ class Program
                         //repeat until won
 
                         cpuShips(playerTwoGrid, playerTwoShips);
-                        
+                        cpuShips(playerOneGrid, playerOneShips);
+                        foreach(Ship s in playerOneShips)
+                        {
+                            drawShipToBoard(playerOneGrid, s);
+                        }
 
+
+                        while(true)
+                        {
+                            if(turn == false)
+                            {
+                                gameTurn(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips, playerOneGuesses, playerTwoGuesses, turn);
+                            }
+                            if(turn == true)
+                            {
+                                cpuGuessAndUpdate(playerTwoGrid, playerOneGrid, playerTwoShips, playerOneShips, playerTwoGuesses, allPositions);
+                            }
+
+                            int p1Hits = 0;
+                            int p2Hits = 0;
+
+                            for (int i = 0; i < 5; i++) //if a player has 17 hits all their ships are gone
+                            {
+                                var hits1 = playerOneShips[i].getHits().Count();
+                                var hits2 = playerTwoShips[i].getHits().Count();
+
+                                p1Hits += hits1;
+                                p2Hits += hits2;
+                            }
+                            if (p1Hits == 17)
+                            {
+                                playerWon = 2;
+                                break;
+                            }
+                            if (p2Hits == 17)
+                            {
+                                playerWon = 1;
+                                break;
+                            }
+
+                            turn = !turn; //not turn to switch to other player
+                        }
                         Console.ReadKey();
-
-
                         break;
                     }
                 case 0:
                     {
+                        List<string> cpuGuesses1 = new List<string>();
+                        List<string> cpuGuesses2 = new List<string>();
+
+                        foreach(string i in allPositions)
+                        {
+                            cpuGuesses1.Add(i);
+                            cpuGuesses2.Add(i);
+                        }
+
                         sampleGame(playerOneGrid, playerTwoGrid, playerOneShips, playerTwoShips); //makes two random grids with random ships
                         for (int i = 0; i < 5; i++)
                         {
                             drawShipToBoard(playerOneGrid, playerOneShips[i]); //draws each ship to board ;optional
                             drawShipToBoard(playerTwoGrid, playerTwoShips[i]);
                         }
-
-                        string[] columns = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
-                        string[] rows = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-
-                        List<string> allPositions = new List<string>();
-                        for (int c = 0; c < 10; c++)
-                        {
-                            for (int r = 0; r < 10; r++)
-                            {
-                                string posToAdd = string.Join(';', columns[c], rows[r]);
-                                cpuGuesses1.Add(posToAdd);
-                                cpuGuesses2.Add(posToAdd);
-                            }
-                        } //creates a list of all possible positions
 
                         while (true)
                         {
@@ -202,7 +247,7 @@ class Program
                             }
                         }
 
-                        displayGame(playerOneGrid, 1);
+                        displayGame(playerOneGrid, false);
                         Console.Write("\nGuesses {0}: ", playerOneGuesses.Count());
                         foreach (string s in playerOneGuesses)
                         {
@@ -214,7 +259,7 @@ class Program
                             Console.Write(h);
                         }
                         Console.ReadKey();
-                        displayGame(playerTwoGrid, 2);
+                        displayGame(playerTwoGrid, true);
                         Console.Write("\nGuesses {0}: ", playerTwoGuesses.Count());
                         foreach (string s in playerTwoGuesses)
                         {
@@ -290,10 +335,20 @@ class Program
         Console.Clear();
     } //display an error message and then clear the console.
 
-    static void displayGame(string[] grid, int titleToDisplay)
+    static void displayGame(string[] grid, bool titleToDisplay)
     {
+        int t = 0;
+        if(titleToDisplay == false)
+        {
+            t = 1;
+        }
+        if(titleToDisplay == true)
+        {
+            t = 2;
+        }
+
         Console.Clear();
-        displayTitle(titleToDisplay);
+        displayTitle(t);
         Console.WriteLine();
         displayBoard(grid);
         Console.WriteLine();
@@ -757,32 +812,46 @@ class Program
             Random rnd = new Random();
             int guessPositionInList = rnd.Next(0, allPositions.Count());
             string[] guess = allPositions[guessPositionInList].Split(';');
+            string column = guess[0];
+            string row = guess[1];
 
 
-            bool isHitOrMiss = isShipAtPosition(guess[0], guess[1], oppShips);
+            bool isHitOrMiss = isShipAtPosition(column, row, oppShips);
             if (isHitOrMiss == true)
             {
-                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], ')', true);
-                drawToBoardSetCoord(oppGrid, guess[0], guess[1], ')', false);
+                drawToBoardSetCoord(currentPGrid, column, row, ')', true);
+                drawToBoardSetCoord(oppGrid, column, row, ')', false);
 
                 foreach (Ship i in oppShips)
                 {
                     string[] pos = i.getPositions();
-                    string targetCoords = string.Join(';', guess[0], guess[1]);
+                    string targetCoords = string.Join(';', column, row);
                     if (pos.Contains(targetCoords) == true)
                     {
                         i.addHit(targetCoords);
                     }
                 }
+
+                updateShipStatus(currentPGrid, currentPShips);
+                displayGame(currentPGrid, true);
+
+                Console.WriteLine("Hit at {0},{1}! Press any key to start the next turn...", column, row);
+                Console.ReadKey();
             }
             if (isHitOrMiss == false)
             {
-                drawToBoardSetCoord(currentPGrid, guess[0], guess[1], '=', true);
-                drawToBoardSetCoord(oppGrid, guess[0], guess[1], '=', false);
+                drawToBoardSetCoord(currentPGrid, column, row, '=', true);
+                drawToBoardSetCoord(oppGrid, column, row, '=', false);
 
                 updateShipStatus(currentPGrid, currentPShips);
+                displayGame(currentPGrid, true);
+
+                Console.WriteLine("Miss at {0},{1}! Press any key to start the next turn...", column, row);
+                Console.ReadKey();
             }
-            allPositions.RemoveAt(guessPositionInList);
+            previousGuesses.Add(string.Join(';', column, row));
+
+            break;
             previousGuesses.Add(string.Join(';', guess[0], guess[1]));
 
             break;
@@ -791,7 +860,7 @@ class Program
 
     //GAME : PLAYER
 
-    static void ships(string[] grid, Ship[] playerShips, int player)
+    static void ships(string[] grid, Ship[] playerShips, bool turn)
     {
         //1.create the list of ships i need to place onto the board.
         //[while all ships not place]
@@ -823,7 +892,7 @@ class Program
         while (shipsPlaced < 5)
         {
             updateShipStatus(grid, playerShips);
-            displayGame(grid, player);
+            displayGame(grid, turn);
             string[] command = new string[5];
 
             Console.WriteLine("[Place/Move] [Shipname] [Start Position] [Directon]");
@@ -1011,7 +1080,7 @@ class Program
             }
         }
         updateShipStatus(grid, playerShips);
-        displayGame(grid, player);
+        displayGame(grid, turn);
     } //place the players ships onto the board
 
     static string[] checkCommand_placemove(string command, string[] shipNames)
@@ -1261,7 +1330,7 @@ class Program
         return cmd;
     } //check command for placing player ships is correct, returns string[] of command terms
 
-    static void gameTurn(string[] currentPGrid, string[] oppGrid, Ship[] currentPShips, Ship[] oppShips, List<string> playerGuesses, int turn)
+    static void gameTurn(string[] currentPGrid, string[] oppGrid, Ship[] currentPShips, Ship[] oppShips, List<string> playerGuesses, List<string> oppGuesses, bool turn)
     {
         //update board.
         //get a guess from the player.
@@ -1275,8 +1344,8 @@ class Program
             updateShipStatus(currentPGrid, currentPShips);
             displayGame(currentPGrid, turn);
 
-            string g = string.Join(' ', playerGuesses);
-            Console.WriteLine("My Guesses: " + g);
+            string mg = string.Join(' ', playerGuesses);
+            Console.WriteLine("My Guesses: " + mg + " ");
 
             string mh = "";
             foreach (Ship i in oppShips)
@@ -1284,18 +1353,18 @@ class Program
                 var htemp = i.getHits();
                 mh = mh + string.Join(',', htemp);
             }
+            Console.WriteLine("My Hits: " + mh + " ");
 
+            string og = string.Join(' ', oppGuesses);
+            Console.WriteLine("\nOpponent Guesses: " + og + " ");
 
-            Console.WriteLine("My Hits: " + mh);
-
-            string h = "";
+            string oh = "";
             foreach (Ship i in currentPShips)
             {
                 var htemp = i.getHits();
-                h = h + string.Join(',', htemp);
+                oh = oh + string.Join(',', htemp);
             }
-
-            Console.WriteLine("\nOpponent Hits: " + h);
+            Console.WriteLine("Opponent Hits: " + oh + " ");
 
             Console.WriteLine("\n[Column][Row]");
 
