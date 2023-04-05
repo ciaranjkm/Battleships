@@ -14,9 +14,14 @@ class Program
 {
     static void Main(string[] args)
     {
+        //if os is windows will adjust so full game fits with some extra space.
+        if(OperatingSystem.IsWindows() == true)
+        {
+            Console.WindowHeight = 45;
+        }
+
         while (true)
         {
-            Console.Clear();
             //Calls menu routine as soon as the program opens, will exit while () when
             //valid choiceMade is true.
 
