@@ -1,5 +1,5 @@
 # Battleships
-<ins>**A console application game built in C# .NET 7.**</ins>
+<ins>**A console application game built in C# .NET 6.**</ins>
 
 ## Commands:
 
