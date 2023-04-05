@@ -69,8 +69,7 @@ class Program
             Ship[] playerOneShips = createPlayerShips(); //create ships for each player
             Ship[] playerTwoShips = createPlayerShips();
 
-            //Create list of guesses each player has made.
-            List<string> playerOneGuesses = new List<string>();
+            List<string> playerOneGuesses = new List<string>(); //Create list of guesses each player has made.
             List<string> playerTwoGuesses = new List<string>();
 
             int playerWon = 0;
@@ -132,7 +131,7 @@ class Program
                             turn = !turn; //not turn to switch to other player
                         }
                         break;
-                    } //pass and plau
+                    } //pass and play.
                 case 2:
                     {
                         //TODO: cpu vs player.
@@ -147,9 +146,9 @@ class Program
 
                         cpuShips(playerTwoGrid, playerTwoShips);
                         cpuShips(playerOneGrid, playerOneShips);
-                        foreach (Ship s in playerOneShips)
+                        for(int i = 0; i < 5; i++)
                         {
-                            drawShipToBoard(playerOneGrid, s);
+                            drawShipToBoard(playerOneGrid, playerOneShips[i]);
                         }
 
 
@@ -190,7 +189,7 @@ class Program
                         }
                         Console.ReadKey();
                         break;
-                    }
+                    } //player vs cpu.
                 case 0:
                     {
                         List<string> cpuGuesses1 = new List<string>();
@@ -439,7 +438,6 @@ class Program
             drawToBoardSetCoord(grid, c, r, charToDraw, false);
         }
     }
-
     static void removeShipFromBoard(string[] grid, Ship shipToDraw, bool targetBoard)
     {
         string[] positions = shipToDraw.getPositions();
@@ -585,7 +583,6 @@ class Program
         //returns [-1,-1] for error, returns coords to draw if valid.
         return coords;
     } //get what char to change to draw to left board.
-
     static int[] getCoordsForBoardTwo(string c, string r)
     {
         int[] coords = getCoordsForBoardOne(c, r);
@@ -638,7 +635,7 @@ class Program
         for (int i = 0; i < ships.Length; i++)
         {
             bool sts = ships[i].getPlaced();
-            statuses[i] = sts;
+            statuses[i] = sts; //todo fix bugs and playtest. improvements for QOL.
         }
 
         //column to edit = row 110
